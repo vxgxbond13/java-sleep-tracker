@@ -15,6 +15,10 @@ public class SleepTrackerApp {
     static {
         // Регистрируем функции. Позже здесь добавятся новые
         analysisFunctions.add(new CountSessionsFunction());
+        analysisFunctions.add(new BadQualitySessionsCountFunction());
+        analysisFunctions.add(new MinSessionDurationFunction());
+        analysisFunctions.add(new MaxSessionDurationFunction());
+        analysisFunctions.add(new AvgSessionDurationFunction());
     }
 
     public static void main(String[] args) {
