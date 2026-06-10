@@ -2,7 +2,7 @@ package ru.yandex.practicum.sleeptracker;
 
 import java.util.List;
 
-public class BadQualitySessionsCountFunction implements SleepAnalysisFunction{
+public class BadQualitySessionsCountFunction implements SleepAnalysisFunction {
 
     @Override
     public SleepAnalysisResult apply(List<SleepingSession> sessions) {
