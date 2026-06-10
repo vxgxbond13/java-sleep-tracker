@@ -8,10 +8,7 @@ public class MinSessionDurationFunction implements SleepAnalysisFunction {
 
     @Override
     public SleepAnalysisResult apply(List<SleepingSession> sessions) {
-        OptionalLong optionalMin = sessions.stream()
-                .filter(session -> session != null)
-                .mapToLong(session -> Duration.between(session.getStartDateTime(), session.getEndDateTime()).toMinutes())
-                .min();
+        OptionalLong optionalMin = sessions.stream().filter(session -> session != null).mapToLong(session -> Duration.between(session.getStartDateTime(), session.getEndDateTime()).toMinutes()).min();
 
         long minMinutes = optionalMin.orElse(0);
 

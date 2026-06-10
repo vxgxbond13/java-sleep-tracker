@@ -1,8 +1,10 @@
 package ru.yandex.practicum.sleeptracker;
 
 import org.junit.jupiter.api.Test;
+
 import java.time.LocalDateTime;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SleepTrackerAppTest {
@@ -20,7 +22,6 @@ public class SleepTrackerAppTest {
         LocalDateTime now = LocalDateTime.now();
         return new SleepingSession(now, now.plusMinutes(minutes), quality);
     }
-
 
 
     // Вспомогательный метод для создания сессии

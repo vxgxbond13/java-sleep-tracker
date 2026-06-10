@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.util.List;
 
 
-public class AvgSessionDurationFunction implements  SleepAnalysisFunction{
+public class AvgSessionDurationFunction implements SleepAnalysisFunction {
     @Override
     public SleepAnalysisResult apply(List<SleepingSession> sessions) {
         if (sessions == null || sessions.isEmpty()) {

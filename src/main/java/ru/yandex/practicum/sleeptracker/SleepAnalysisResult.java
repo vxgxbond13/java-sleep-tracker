@@ -1,6 +1,6 @@
 package ru.yandex.practicum.sleeptracker;
 
-public class SleepAnalysisResult  {
+public class SleepAnalysisResult {
 
     private final String description;
     private final long value;
