@@ -4,13 +4,30 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SleepTrackerApp {
+    private static final List<SleepAnalysisFunction> analysisFunctions = new ArrayList<>();
+
+    static {
+        // Регистрируем функции. Позже здесь добавятся новые
+        analysisFunctions.add(new CountSessionsFunction());
+    }
 
     public static void main(String[] args) {
+
+
+
+        if (args.length == 0) {
+            System.err.println("Ошибка: укажите путь к файлу с логом сна");
+            System.err.println("Пример: java SleepTrackerApp sleep_log.txt");
+            System.exit(1);
+        }
+
+
 
         String filePath = args[0];
         Path path = Paths.get(filePath);
@@ -18,25 +35,31 @@ public class SleepTrackerApp {
         // Чтение файла и парсинг в список SleepingSession
         List<SleepingSession> sessions = loadSessions(path);
 
-        // Пока просто выводим результат для проверки
-        System.out.println("Загружено сессий: " + sessions.size());
-        sessions.forEach(session -> {
-            System.out.println(session.getStartDateTime() + " -> " +
-                    session.getEndDateTime() + " [" +
-                    session.getQuality() + "]");
-        });
+        if (sessions.isEmpty()) {
+            System.out.println("Нет данных для анализа.");
+            return;
+        }
+
+        analysisFunctions.stream()
+                .map(function -> function.apply(sessions))
+                .forEach(result -> System.out.println(result));
     }
 
 
     private static List<SleepingSession> loadSessions(Path path) {
         try (Stream<String> lines = Files.lines(path)) {
             return lines
-                    .filter(line -> line != null && !line.trim().isEmpty()) // пропускаем пустые строки
-                    .map(SleepingSession::fromLine)   // строку -> объект SleepingSession
-                    .collect(Collectors.toList());    // собираем в List
+                    .filter(line -> line != null && !line.trim().isEmpty())
+                    .map(SleepingSession::fromLine)
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             System.err.println("Ошибка при чтении файла: " + e.getMessage());
-            return List.of(); // возвращаем пустой список при ошибке
+            return List.of();
         }
+    }
+
+    // Метод для добавления новых функций (если понадобится динамически)
+    public static void addFunction(SleepAnalysisFunction function) {
+        analysisFunctions.add(function);
     }
 }
