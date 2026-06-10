@@ -19,6 +19,8 @@ public class SleepTrackerApp {
         analysisFunctions.add(new MinSessionDurationFunction());
         analysisFunctions.add(new MaxSessionDurationFunction());
         analysisFunctions.add(new AvgSessionDurationFunction());
+        analysisFunctions.add(new SleeplessNightsFunction());
+        analysisFunctions.add(new ChronotypeFunction());
     }
 
     public static void main(String[] args) {
@@ -46,7 +48,19 @@ public class SleepTrackerApp {
 
         analysisFunctions.stream()
                 .map(function -> function.apply(sessions))
-                .forEach(result -> System.out.println(result));
+                .forEach(result -> {
+                    if (result.getDescription().equals("Хронотип пользователя")) {
+                        String chronotypeName;
+                        switch ((int) result.getValue()) {
+                            case 1: chronotypeName = "Сова"; break;
+                            case 2: chronotypeName = "Жаворонок"; break;
+                            default: chronotypeName = "Голубь";
+                        }
+                        System.out.println(result.getDescription() + ": " + chronotypeName);
+                    } else {
+                        System.out.println(result);
+                    }
+                });
     }
 
 

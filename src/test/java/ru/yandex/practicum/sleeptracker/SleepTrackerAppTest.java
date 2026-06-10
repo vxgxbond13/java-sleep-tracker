@@ -12,11 +12,27 @@ public class SleepTrackerAppTest {
     private final MinSessionDurationFunction minFunction = new MinSessionDurationFunction();
     private final MaxSessionDurationFunction maxFunction = new MaxSessionDurationFunction();
     private final AvgSessionDurationFunction avgFunction = new AvgSessionDurationFunction();
+    private final SleeplessNightsFunction sleeplessNightsFunction = new SleeplessNightsFunction();
+    private final ChronotypeFunction function = new ChronotypeFunction();
 
     // Вспомогательный метод для создания сессии
     private SleepingSession session(long minutes, SleepQuality quality) {
         LocalDateTime now = LocalDateTime.now();
         return new SleepingSession(now, now.plusMinutes(minutes), quality);
+    }
+
+
+
+    // Вспомогательный метод для создания сессии
+    private SleepingSession session(int year, int month, int day, int startHour, int startMinute,
+                                    int endHour, int endMinute, SleepQuality quality) {
+        LocalDateTime start = LocalDateTime.of(year, month, day, startHour, startMinute);
+        LocalDateTime end = LocalDateTime.of(year, month, day, endHour, endMinute);
+        // Если время окончания меньше времени начала - значит, переход на следующий день
+        if (end.isBefore(start)) {
+            end = end.plusDays(1);
+        }
+        return new SleepingSession(start, end, quality);
     }
 
     // Вспомогательный метод для пустого списка
@@ -116,5 +132,105 @@ public class SleepTrackerAppTest {
         );
         // (60 + 360 + 301) / 3 = 721 / 3 = 240.333 → 240
         assertEquals(240, avgFunction.apply(sessions).getValue());
+    }
+
+    // ========== SleeplessNightsFunction ==========
+
+    @Test
+    void sleeplessNights_shouldReturnZeroForEmptyList() {
+        assertEmptyListResult(sleeplessNightsFunction, "Количество бессонных ночей");
+    }
+
+    @Test
+    void sleeplessNights_shouldReturnOneWhenFirstNightIsSleepless() {
+        List<SleepingSession> sessions = List.of(
+                session(2025, 10, 1, 23, 0, 7, 0, SleepQuality.GOOD),
+                session(2025, 10, 2, 23, 0, 7, 0, SleepQuality.GOOD),
+                session(2025, 10, 3, 23, 0, 7, 0, SleepQuality.GOOD)
+        );
+
+        SleepAnalysisResult result = sleeplessNightsFunction.apply(sessions);
+        assertEquals(1, result.getValue());
+    }
+
+    @Test
+    void sleeplessNights_shouldCountOneSleeplessNightInMiddle() {
+        List<SleepingSession> sessions = List.of(
+                session(2025, 10, 1, 23, 0, 7, 0, SleepQuality.GOOD),   // ночь 1-2: спит
+                // ночь 2-3: БЕССОННАЯ
+                session(2025, 10, 3, 1, 0, 8, 0, SleepQuality.NORMAL)     // ночь 3-4: спит
+        );
+
+        SleepAnalysisResult result = sleeplessNightsFunction.apply(sessions);
+        assertEquals(1, result.getValue());
+    }
+
+    // ========== ChronotypeFunction ==========
+
+    @Test
+    void shouldReturnDoveForEmptyList() {
+        SleepAnalysisResult result = function.apply(List.of());
+        assertEquals(0, result.getValue()); // 0 = Голубь
+    }
+
+    @Test
+    void shouldReturnOwlWhenOnlyOwls() {
+        List<SleepingSession> sessions = List.of(
+                session(2025, 10, 1, 23, 30, 9, 30, SleepQuality.GOOD),
+                session(2025, 10, 2, 23, 45, 9, 15, SleepQuality.GOOD),
+                session(2025, 10, 3, 23, 15, 10, 0, SleepQuality.GOOD)
+        );
+
+        SleepAnalysisResult result = function.apply(sessions);
+        assertEquals(1, result.getValue()); // 1 = Сова
+    }
+
+    @Test
+    void shouldReturnLarkWhenOnlyLarks() {
+        List<SleepingSession> sessions = List.of(
+                session(2025, 10, 1, 21, 30, 6, 30, SleepQuality.GOOD),
+                session(2025, 10, 2, 21, 45, 6, 45, SleepQuality.GOOD),
+                session(2025, 10, 3, 21, 15, 6, 15, SleepQuality.GOOD)
+        );
+
+        SleepAnalysisResult result = function.apply(sessions);
+        assertEquals(2, result.getValue()); // 2 = Жаворонок
+    }
+
+    @Test
+    void shouldReturnOwlWhenOwlsMajority() {
+        List<SleepingSession> sessions = List.of(
+                session(2025, 10, 1, 23, 30, 9, 30, SleepQuality.GOOD), // сова
+                session(2025, 10, 2, 23, 45, 9, 15, SleepQuality.GOOD), // сова
+                session(2025, 10, 3, 21, 30, 6, 30, SleepQuality.GOOD)  // жаворонок
+        );
+
+        SleepAnalysisResult result = function.apply(sessions);
+        assertEquals(1, result.getValue()); // Сова
+    }
+
+    @Test
+    void shouldReturnDoveWhenTie() {
+        List<SleepingSession> sessions = List.of(
+                session(2025, 10, 1, 23, 30, 9, 30, SleepQuality.GOOD), // сова
+                session(2025, 10, 2, 23, 45, 9, 15, SleepQuality.GOOD), // сова
+                session(2025, 10, 3, 21, 30, 6, 30, SleepQuality.GOOD), // жаворонок
+                session(2025, 10, 4, 21, 15, 6, 45, SleepQuality.GOOD), // жаворонок
+                session(2025, 10, 5, 22, 30, 8, 0, SleepQuality.GOOD)    // голубь
+        );
+
+        SleepAnalysisResult result = function.apply(sessions);
+        assertEquals(0, result.getValue()); // Голубь (при равенстве)
+    }
+
+    @Test
+    void shouldIgnoreDaySession() {
+        List<SleepingSession> sessions = List.of(
+                session(2025, 10, 1, 14, 0, 15, 0, SleepQuality.NORMAL), // дневная
+                session(2025, 10, 1, 23, 30, 9, 30, SleepQuality.GOOD)     // ночная
+        );
+
+        SleepAnalysisResult result = function.apply(sessions);
+        assertEquals(1, result.getValue()); // Только сова
     }
 }
