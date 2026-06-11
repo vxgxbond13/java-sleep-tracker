@@ -8,6 +8,6 @@ public class CountSessionsFunction implements SleepAnalysisFunction {
     public SleepAnalysisResult apply(List<SleepingSession> sessions) {
         long count = sessions.size(); // size() — не цикл, это свойство коллекции
 
-        return new SleepAnalysisResult("Общее количество сессий сна", count);
+        return new SleepAnalysisResult(DescriptionConstants.COUNT_SESSIONS, count);
     }
 }

@@ -14,7 +14,6 @@ public class MaxSessionDurationFunction implements SleepAnalysisFunction {
 
         long maxMinutes = optionalMax.orElse(0);
 
-        String description = "Максимальная продолжительность сна (минуты)";
-        return new SleepAnalysisResult(description, maxMinutes);
+        return new SleepAnalysisResult(DescriptionConstants.MAX_DURATION, maxMinutes);
     }
 }

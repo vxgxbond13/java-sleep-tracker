@@ -10,7 +10,6 @@ public class BadQualitySessionsCountFunction implements SleepAnalysisFunction {
                 .filter(session -> session != null)
                 .filter(session -> session.getQuality() == SleepQuality.BAD)
                 .count();
-        String description = "Количество сессий с плохим качеством сна";
-        return new SleepAnalysisResult(description, badCount);
+        return new SleepAnalysisResult(DescriptionConstants.BAD_QUALITY_SESSIONS, badCount);
     }
 }

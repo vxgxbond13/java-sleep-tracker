@@ -47,21 +47,11 @@ public class SleepTrackerApp {
         analysisFunctions.stream()
                 .map(function -> function.apply(sessions))
                 .forEach(result -> {
-                    if (result.getDescription().equals("Хронотип пользователя")) {
-                        String chronotypeName;
-                        switch ((int) result.getValue()) {
-                            case 1:
-                                chronotypeName = "Сова";
-                                break;
-                            case 2:
-                                chronotypeName = "Жаворонок";
-                                break;
-                            default:
-                                chronotypeName = "Голубь";
-                        }
-                        System.out.println(result.getDescription() + ": " + chronotypeName);
+                    if (result.getDescription().equals(DescriptionConstants.CHRONOTYPE)) {
+                        Chronotype chronotype = Chronotype.fromCode((int) result.getValue());
+                        System.out.println(result.getDescription() + ": " + chronotype.getDisplayName());
                     } else {
-                        System.out.println(result);
+                        System.out.println(result);  // ← выводим все остальные функции
                     }
                 });
     }

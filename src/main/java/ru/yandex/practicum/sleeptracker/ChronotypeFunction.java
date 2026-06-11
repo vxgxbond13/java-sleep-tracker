@@ -5,17 +5,17 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ChronotypeFunction implements SleepAnalysisFunction {
+import static ru.yandex.practicum.sleeptracker.Chronotype.DOVE;
+import static ru.yandex.practicum.sleeptracker.Chronotype.LARK;
+import static ru.yandex.practicum.sleeptracker.Chronotype.OWL;
 
-    // Константы для типов
-    private static final int OWL = 1;
-    private static final int LARK = 2;
-    private static final int DOVE = 0;
+public class ChronotypeFunction implements SleepAnalysisFunction {
 
     @Override
     public SleepAnalysisResult apply(List<SleepingSession> sessions) {
+
         if (sessions == null || sessions.isEmpty()) {
-            return new SleepAnalysisResult("Хронотип пользователя", DOVE);
+            return new SleepAnalysisResult(DescriptionConstants.CHRONOTYPE, Chronotype.DOVE.getCode());
         }
 
         // Фильтруем только ночные сессии (которые пересекаются с интервалом 00:00-06:00)
@@ -24,7 +24,7 @@ public class ChronotypeFunction implements SleepAnalysisFunction {
                 .collect(Collectors.toList());
 
         if (nightSessions.isEmpty()) {
-            return new SleepAnalysisResult("Хронотип пользователя", DOVE);
+            return new SleepAnalysisResult(DescriptionConstants.CHRONOTYPE, Chronotype.DOVE.getCode());
         }
 
         // Считаем типы
@@ -39,7 +39,7 @@ public class ChronotypeFunction implements SleepAnalysisFunction {
         long doveCount = nightSessions.size() - owlCount - larkCount;
 
         // Определяем победителя
-        int chronotype;
+        Chronotype chronotype;
         if (owlCount > larkCount && owlCount > doveCount) {
             chronotype = OWL;
         } else if (larkCount > owlCount && larkCount > doveCount) {
@@ -48,7 +48,7 @@ public class ChronotypeFunction implements SleepAnalysisFunction {
             chronotype = DOVE;  // при равенстве или если голуби в большинстве
         }
 
-        return new SleepAnalysisResult("Хронотип пользователя", chronotype);
+        return new SleepAnalysisResult(DescriptionConstants.CHRONOTYPE, chronotype.getCode());
     }
 
     // Проверка, что сессия ночная (пересекается с 00:00-06:00)

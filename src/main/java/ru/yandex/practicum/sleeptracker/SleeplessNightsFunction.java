@@ -12,7 +12,7 @@ public class SleeplessNightsFunction implements SleepAnalysisFunction {
     @Override
     public SleepAnalysisResult apply(List<SleepingSession> sessions) {
         if (sessions == null || sessions.isEmpty()) {
-            return new SleepAnalysisResult("Количество бессонных ночей", 0);
+            return new SleepAnalysisResult(DescriptionConstants.SLEEPLESS_NIGHTS, 0);
         }
 
         LocalDate firstDate = sessions.stream()
@@ -41,7 +41,7 @@ public class SleeplessNightsFunction implements SleepAnalysisFunction {
                 })
                 .count();
 
-        return new SleepAnalysisResult("Количество бессонных ночей", sleeplessNights);
+        return new SleepAnalysisResult(DescriptionConstants.SLEEPLESS_NIGHTS, sleeplessNights);
     }
 }
 

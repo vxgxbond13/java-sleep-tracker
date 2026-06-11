@@ -46,7 +46,7 @@ public class SleepTrackerAppTest {
     // ========== CountSessionsFunction ==========
     @Test
     void countSessions_shouldReturnZeroForEmptyList() {
-        assertEmptyListResult(countFunction, "Общее количество сессий сна");
+        assertEmptyListResult(countFunction, DescriptionConstants.COUNT_SESSIONS);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class SleepTrackerAppTest {
     // ========== BadQualitySessionsCountFunction ==========
     @Test
     void badSessions_shouldReturnZeroForEmptyList() {
-        assertEmptyListResult(badFunction, "Количество сессий с плохим качеством сна");
+        assertEmptyListResult(badFunction, DescriptionConstants.BAD_QUALITY_SESSIONS);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class SleepTrackerAppTest {
     // ========== MinSessionDurationFunction ==========
     @Test
     void minDuration_shouldReturnZeroForEmptyList() {
-        assertEmptyListResult(minFunction, "Минимальная продолжительность сна (минуты)");
+        assertEmptyListResult(minFunction, DescriptionConstants.MIN_DURATION);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class SleepTrackerAppTest {
     // ========== MaxSessionDurationFunction ==========
     @Test
     void maxDuration_shouldReturnZeroForEmptyList() {
-        assertEmptyListResult(maxFunction, "Максимальная продолжительность сна (минуты)");
+        assertEmptyListResult(maxFunction, DescriptionConstants.MAX_DURATION);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class SleepTrackerAppTest {
     // ========== AvgSessionDurationFunction ==========
     @Test
     void avgDuration_shouldReturnZeroForEmptyList() {
-        assertEmptyListResult(avgFunction, "Средняя продолжительность сна (минуты)");
+        assertEmptyListResult(avgFunction, DescriptionConstants.AVG_DURATION);
     }
 
     @Test
@@ -139,7 +139,7 @@ public class SleepTrackerAppTest {
 
     @Test
     void sleeplessNights_shouldReturnZeroForEmptyList() {
-        assertEmptyListResult(sleeplessNightsFunction, "Количество бессонных ночей");
+        assertEmptyListResult(sleeplessNightsFunction, DescriptionConstants.SLEEPLESS_NIGHTS);
     }
 
     @Test
@@ -171,7 +171,7 @@ public class SleepTrackerAppTest {
     @Test
     void shouldReturnDoveForEmptyList() {
         SleepAnalysisResult result = function.apply(List.of());
-        assertEquals(0, result.getValue()); // 0 = Голубь
+        assertEquals(Chronotype.DOVE.getCode(), result.getValue()); // 0 = Голубь
     }
 
     @Test
@@ -183,7 +183,7 @@ public class SleepTrackerAppTest {
         );
 
         SleepAnalysisResult result = function.apply(sessions);
-        assertEquals(1, result.getValue()); // 1 = Сова
+        assertEquals(Chronotype.OWL.getCode(), result.getValue()); // 1 = Сова
     }
 
     @Test
@@ -195,7 +195,7 @@ public class SleepTrackerAppTest {
         );
 
         SleepAnalysisResult result = function.apply(sessions);
-        assertEquals(2, result.getValue()); // 2 = Жаворонок
+        assertEquals(Chronotype.LARK.getCode(), result.getValue()); // 2 = Жаворонок
     }
 
     @Test
@@ -207,7 +207,7 @@ public class SleepTrackerAppTest {
         );
 
         SleepAnalysisResult result = function.apply(sessions);
-        assertEquals(1, result.getValue()); // Сова
+        assertEquals(Chronotype.OWL.getCode(), result.getValue()); // Сова
     }
 
     @Test
@@ -221,7 +221,7 @@ public class SleepTrackerAppTest {
         );
 
         SleepAnalysisResult result = function.apply(sessions);
-        assertEquals(0, result.getValue()); // Голубь (при равенстве)
+        assertEquals(Chronotype.DOVE.getCode(), result.getValue()); // Голубь (при равенстве)
     }
 
     @Test
@@ -232,6 +232,6 @@ public class SleepTrackerAppTest {
         );
 
         SleepAnalysisResult result = function.apply(sessions);
-        assertEquals(1, result.getValue()); // Только сова
+        assertEquals(Chronotype.OWL.getCode(), result.getValue()); // Только сова
     }
 }

@@ -12,7 +12,6 @@ public class MinSessionDurationFunction implements SleepAnalysisFunction {
 
         long minMinutes = optionalMin.orElse(0);
 
-        String description = "Минимальная продолжительность сна (минуты)";
-        return new SleepAnalysisResult(description, minMinutes);
+        return new SleepAnalysisResult(DescriptionConstants.MIN_DURATION, minMinutes);
     }
 }

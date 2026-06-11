@@ -8,7 +8,7 @@ public class AvgSessionDurationFunction implements SleepAnalysisFunction {
     @Override
     public SleepAnalysisResult apply(List<SleepingSession> sessions) {
         if (sessions == null || sessions.isEmpty()) {
-            return new SleepAnalysisResult("Средняя продолжительность сна (минуты)", 0);
+            return new SleepAnalysisResult(DescriptionConstants.AVG_DURATION, 0);
         }
 
         // Сумма длительностей всех сессий в минутах
@@ -19,6 +19,6 @@ public class AvgSessionDurationFunction implements SleepAnalysisFunction {
 
         long averageMinutes = sumMinutes / sessions.size();
 
-        return new SleepAnalysisResult("Средняя продолжительность сна (минуты)", averageMinutes);
+        return new SleepAnalysisResult(DescriptionConstants.AVG_DURATION, averageMinutes);
     }
 }
